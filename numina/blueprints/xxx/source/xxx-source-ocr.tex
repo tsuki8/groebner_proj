@@ -1,1 +1,132 @@
-% OCR pending for xxx
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{ctex}
+\usepackage{geometry}
+\geometry{a4paper,margin=1in}
+
+\newtheorem{proposition}{命题}
+\newtheorem{remark}{注记}
+
+\begin{document}
+
+\begin{proposition}
+设 $S = \operatorname{diag}(s_1, \ldots, s_p)$ 与 $T = \operatorname{diag}(t_1, \ldots, t_q)$ 为复对角矩阵，且存在 $\delta > 0$ 使得对所有 $1 \le a \le p$，$1 \le b \le q$ 均有
+\[
+\operatorname{Re}(s_a - t_b) \ge \delta.
+\]
+则对任意 $p \times q$ 矩阵 $A$，Sylvester 方程
+\[
+A = SC - CT
+\]
+存在唯一解 $C$，且满足：
+\begin{enumerate}
+  \item[(i)] $C_{ab} = \dfrac{A_{ab}}{s_a - t_b}$，$1 \le a \le p$，$1 \le b \le q$；
+  \item[(ii)] $C = \displaystyle\int_0^\infty e^{-uS}\, A\, e^{uT}\, du$，其中 $e^{-uS} = \operatorname{diag}(e^{-s_1 u}, \ldots, e^{-s_p u})$，$e^{uT} = \operatorname{diag}(e^{t_1 u}, \ldots, e^{t_q u})$；
+  \item[(iii)] $\|C\| \le \dfrac{1}{\delta} \|A\|$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) \emph{逐元素公式与唯一性。} 由于 $S$、$T$ 均为对角矩阵，方程 $A = SC - CT$ 逐元素展开为
+\[
+A_{ab} = s_a\, C_{ab} - C_{ab}\, t_b = (s_a - t_b)\, C_{ab}.
+\]
+条件 $\operatorname{Re}(s_a - t_b) \ge \delta > 0$ 保证 $s_a - t_b \ne 0$，故唯一解为
+\[
+C_{ab} = \frac{A_{ab}}{s_a - t_b}.
+\]
+
+(ii) \emph{积分表示。} 定义矩阵值函数
+\[
+F(u) = e^{-uS}\, A\, e^{uT}, \qquad u \ge 0.
+\]
+由于 $S$、$T$ 均为对角矩阵，$F(u)$ 的第 $(a,b)$ 元素为
+\[
+F(u)_{ab} = e^{-s_a u}\, A_{ab}\, e^{t_b u} = A_{ab}\, e^{-(s_a - t_b) u}.
+\]
+条件 $\operatorname{Re}(s_a - t_b) \ge \delta > 0$ 保证 $|F(u)_{ab}| \le |A_{ab}|\, e^{-\delta u}$，故积分 $\int_0^\infty F(u)\, du$ 绝对收敛。逐元素积分得
+\[
+\int_0^\infty F(u)_{ab}\, du = A_{ab} \int_0^\infty e^{-(s_a - t_b) u}\, du = \frac{A_{ab}}{s_a - t_b} = C_{ab},
+\]
+从而 $C = \int_0^\infty F(u)\, du$。
+
+下面直接验证此 $C$ 满足 Sylvester 方程。注意到
+\[
+\frac{d}{du} e^{-uS} = -S\, e^{-uS}, \qquad \frac{d}{du} e^{uT} = T\, e^{uT},
+\]
+且对角矩阵之间可交换，因此
+\[
+\frac{d}{du} \bigl[ -e^{-uS}\, A\, e^{uT} \bigr] = S\, e^{-uS}\, A\, e^{uT} - e^{-uS}\, A\, e^{uT}\, T.
+\]
+对 $u$ 从 $0$ 到 $\infty$ 积分得
+\begin{align*}
+SC - CT &= \int_0^\infty \bigl( S\, e^{-uS}\, A\, e^{uT} - e^{-uS}\, A\, e^{uT}\, T \bigr)\, du \\
+&= \int_0^\infty \frac{d}{du}\bigl[ -e^{-uS}\, A\, e^{uT} \bigr]\, du \\
+&= \bigl[ -e^{-uS}\, A\, e^{uT} \bigr]_{u=0}^{u=\infty} \\
+&= 0 - (-I_p\, A\, I_q) = A.
+\end{align*}
+边界项在 $u \to \infty$ 时趋于零，因为 $\| e^{-uS}\, A\, e^{uT} \| \le e^{-\delta u} \|A\| \to 0$（理由见下文 (iii) 中的估计）。
+
+(iii) \emph{算子范数估计。} 由 Bochner 积分的范数不等式，
+\[
+\|C\| = \left\| \int_0^\infty e^{-uS}\, A\, e^{uT}\, du \right\| \le \int_0^\infty \| e^{-uS} \| \cdot \|A\| \cdot \| e^{uT} \|\, du.
+\]
+对角矩阵的算子范数等于其对角元素模的最大值，故
+\begin{align*}
+\| e^{-uS} \| &= \max_{1 \le a \le p} |e^{-s_a u}| = \max_{1 \le a \le p} e^{-\operatorname{Re}(s_a)\, u} = e^{-(\min_a \operatorname{Re}(s_a))\, u}, \\
+\| e^{uT} \| &= \max_{1 \le b \le q} |e^{t_b u}| = \max_{1 \le b \le q} e^{\operatorname{Re}(t_b)\, u} = e^{(\max_b \operatorname{Re}(t_b))\, u}.
+\end{align*}
+由条件 $\operatorname{Re}(s_a - t_b) \ge \delta$ 对所有 $a, b$ 成立，特别地取 $a$ 使 $\operatorname{Re}(s_a)$ 最小、取 $b$ 使 $\operatorname{Re}(t_b)$ 最大，得
+\[
+\min_a \operatorname{Re}(s_a) - \max_b \operatorname{Re}(t_b) \ge \delta,
+\]
+从而
+\[
+\| e^{-uS} \| \cdot \| e^{uT} \| = e^{-(\min_a \operatorname{Re}(s_a) - \max_b \operatorname{Re}(t_b))\, u} \le e^{-\delta u}.
+\]
+因此
+\[
+\|C\| \le \|A\| \int_0^\infty e^{-\delta u}\, du = \frac{\|A\|}{\delta}.
+\qedhere
+\]
+\end{proof}
+
+\begin{remark}[论文中 $\delta$ 的具体取值]
+我们详细说明上述命题如何对应到 JOS 的 Claim 1 证明。在该证明中，给定 $0 < \varepsilon < 1$，$m = 4^n$，将 $m \times m$ 零对角矩阵 $A$ 写成 $4 \times 4$ 分块形式（每块大小 $4^{n-1} \times 4^{n-1}$）。对角块 $A_{ii}$ 由归纳假设处理，而非对角块 $A_{ij}$（$i \ne j$）通过求解 Sylvester 方程 $A_{ij} = B'_{ii} C'_{ij} - C'_{ij} B'_{jj}$ 来构造 $C'_{ij}$。
+
+四个对角矩阵 $B'_{ii}$ 的构造如下。设 $B_{ii}$ 为对角元素取自 $\Lambda_{n-1}$ 的对角矩阵（由归纳给出），令
+\[
+\{B'_{ii}\}_{i=1}^4 = \left\{ \frac{1 - \varepsilon}{2} B_{\frac{a+1}{2} + \frac{b+2}{2},\, \frac{a+1}{2} + \frac{b+2}{2}} + \left( a\, \frac{1 + \varepsilon}{2} + \mathrm{i}\, b\, \frac{1 + \varepsilon}{2} \right) I_{4^{n-1}} \right\}_{a, b = \pm 1}.
+\]
+因此四个 $B'_{ii}$ 的谱分别包含在以下四个中心的平移之中：
+\[
+\left( \pm\, \frac{1 + \varepsilon}{2},\; \pm\, \frac{1 + \varepsilon}{2} \right),
+\]
+每个谱集包含在以该中心为中心、边长 $1 - \varepsilon$ 的正方形内（因为 $\Lambda_{n-1} \subset [-1, 1] \times [-\mathrm{i}, \mathrm{i}]$，缩放 $\frac{1-\varepsilon}{2}$ 后落入 $\bigl[ -\frac{1-\varepsilon}{2}, \frac{1-\varepsilon}{2} \bigr]^2$）。
+
+对任意 $i \ne j$，两个中心在实轴方向或虚轴方向（或两者）上的差的绝对值为 $1 + \varepsilon$。而两个谱集各自偏离中心至多 $\frac{1-\varepsilon}{2}$，故两个谱集在该方向上的间距至少为
+\[
+(1 + \varepsilon) - 2 \cdot \frac{1 - \varepsilon}{2} = (1 + \varepsilon) - (1 - \varepsilon) = 2\varepsilon.
+\]
+
+\emph{情形一：实轴方向分离：} 若 $\sigma(B'_{ii})$ 与 $\sigma(B'_{jj})$ 的实部之差至少为 $2\varepsilon$（即存在一对 $(i, j)$ 使得 $\operatorname{Re}(s_a) - \operatorname{Re}(t_b) \ge 2\varepsilon$ 对所有 $s_a \in \sigma(B'_{ii})$，$t_b \in \sigma(B'_{jj})$ 成立），则命题直接以 $\delta = 2\varepsilon$ 适用，给出
+\[
+\| C'_{ij} \| \le \frac{1}{2\varepsilon} \| A_{ij} \|.
+\]
+
+\emph{情形二：虚轴方向分离：} 若两个谱集在虚轴方向上被 $2\varepsilon$ 分开（即 $\operatorname{Im}(s_a) - \operatorname{Im}(t_b) \ge 2\varepsilon$），则对原方程 $A_{ij} = B'_{ii} C'_{ij} - C'_{ij} B'_{jj}$ 两边乘以 $\mathrm{i}$ 得
+\[
+\mathrm{i}\, A_{ij} = (\mathrm{i}\, B'_{ii})\, C'_{ij} - C'_{ij}\, (\mathrm{i}\, B'_{jj}).
+\]
+令 $S = \mathrm{i}\, B'_{ii}$，$T = \mathrm{i}\, B'_{jj}$，则 $\operatorname{Re}(\mathrm{i}\, s_a - \mathrm{i}\, t_b) = -\operatorname{Im}(s_a - t_b) \le -2\varepsilon$。若改取 $S = -\mathrm{i}\, B'_{ii}$，$T = -\mathrm{i}\, B'_{jj}$（即将方程乘以 $-\mathrm{i}$），则
+\[
+\operatorname{Re}(-\mathrm{i}\, s_a + \mathrm{i}\, t_b) = \operatorname{Im}(s_a - t_b) \ge 2\varepsilon.
+\]
+此时方程变为 $-\mathrm{i}\, A_{ij} = (-\mathrm{i}\, B'_{ii})\, C'_{ij} - C'_{ij}\, (-\mathrm{i}\, B'_{jj})$，命题以 $\delta = 2\varepsilon$ 应用于 $(-\mathrm{i}\, B'_{ii},\, -\mathrm{i}\, B'_{jj},\, -\mathrm{i}\, A_{ij})$ 即得
+\[
+\| C'_{ij} \| \le \frac{1}{2\varepsilon} \| -\mathrm{i}\, A_{ij} \| = \frac{1}{2\varepsilon} \| A_{ij} \|.
+\]
+\end{remark}
+
+\end{document}
